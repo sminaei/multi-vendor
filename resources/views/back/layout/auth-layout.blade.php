@@ -6,23 +6,13 @@
 		<title>@yield('pagesTitle')</title>
 
 		<!-- Site favicon -->
-		<link
-			rel="apple-touch-icon"
-			sizes="180x180"
-			href="/back/vendors/images/apple-touch-icon.png"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="32x32"
-			href="/back/vendors/images/favicon-32x32.png"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="16x16"
-			href="/back/vendors/images/favicon-16x16.png"
-		/>
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/image/site/{{ get_settings()->site_favicon }}"
+        />
+
 
 		<!-- Mobile Specific Metas -->
 		<meta
@@ -64,6 +54,7 @@
 			gtag("config", "G-GBZ3SGGX85");
 		</script>
 		<!-- Google Tag Manager -->
+        @livewireStyles
         @stack('stylesheets')
 		<!-- End Google Tag Manager -->
 	</head>
@@ -74,12 +65,15 @@
 			>
 				<div class="brand-logo">
 					<a href="login.html">
-						<img src="/back/vendors/images/deskapp-logo.svg" alt="" />
+						<img src="/images/site/{{ get_settings()->site_logo }}" alt="" />
 					</a>
 				</div>
 				<div class="login-menu">
 					<ul>
-						<li><a href="register.html">Register</a></li>
+                        @if(!Route::is('admin.*'))
+                            <li><a href="register.html">Register</a></li>
+
+                        @endif
 					</ul>
 				</div>
 			</div>
@@ -177,7 +171,16 @@
 		<script src="/back/vendors/scripts/script.min.js"></script>
 		<script src="/back/vendors/scripts/process.js"></script>
 		<script src="/back/vendors/scripts/layout-settings.js"></script>
+        <script>
+            if( navigator.userAgent.indexOf("firefox") != -1){
+                history.pushState(null,null, document.URL);
+                window.addEventListener('popstate', function (){
+                    history.pushState(null,null, document.URL);
+                })
+            }
+        </script>
 		<!-- Google Tag Manager (noscript) -->
+        @livewireScripts
         @stack('scripts')
 		<!-- End Google Tag Manager (noscript) -->
 	</body>
