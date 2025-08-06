@@ -6,7 +6,7 @@
             <div class="pd-20 card-box mb-30">
                 <div class="clearfix">
                     <div class="pull-left">
-                        <h4>Categories</h4>
+                        <h4>Edit Categories</h4>
                     </div>
                     <div class="pull-right">
                         <a href=" {{ route('admin.manage-categories.cats-subcats-list') }}" class="btn btn-primary btn-sm" type="button">
@@ -14,7 +14,8 @@
                             Back to Category</a>
                     </div>
                 </div>
-                <form action=" {{ route('admin.manage-categories.store-category') }}" method="post" enctype="multipart/form-data" class="mt-3">
+                <form action=" {{ route('admin.manage-categories.update-category') }}" method="post" enctype="multipart/form-data" class="mt-3">
+                    <input type="hidden" name="category_id" value="{{ $request('id') }}">
                     @csrf
                     @if(Session::get('success'))
                         <div class="alert alert-success">
@@ -38,7 +39,7 @@
                         <div class="col-md-7">
                             <div class="form-group">
                                 <label for="">Category name</label>
-                                <input type="text" class="form-control" name="category_name" value="{{ old('category_name') }}">
+                                <input type="text" class="form-control" name="category_name" value="{{ $category->category_name }}">
                                 @error('category_name')
                                 <span class="text-danger ml-2" >
                                     {{ $message }}
@@ -59,11 +60,11 @@
                                 @enderror
                             </div>
                             <div class="avatar mb-3">
-                                <img src="" alt="" data-ijabo-default-img="" width="50" height="50" id="category_image_preview">
+                                <img src="" alt="" data-ijabo-default-img="/images/categories/{{ $category->category_image }}" width="50" height="50" id="category_image_preview">
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                 </form>
             </div>
         </div>
