@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
+
+class SubCategory extends Model
+{
+    use Sluggable;
+    protected $fillable = [
+        'category_id',
+        'subcategory_name',
+        'subcategory_slug',
+        'is_child_of',
+        'ordering'
+    ];
+    public function sluggable(): array
+    {
+        return [
+            'subcategory_slug' => [
+                'source' => 'subcategory_name'
+            ]
+        ];
+    }
+}
