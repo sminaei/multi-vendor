@@ -61,6 +61,7 @@
         }
         gtag("js", new Date());
 
+<<<<<<< HEAD
         gtag("config", "G-GBZ3SGGX85");
     </script>
     <!-- Google Tag Manager -->
@@ -89,6 +90,36 @@
     <!-- End Google Tag Manager -->
 </head>
 <body>
+=======
+			gtag("config", "G-GBZ3SGGX85");
+		</script>
+		<!-- Google Tag Manager -->
+		<script>
+			(function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+				var f = d.getElementsByTagName(s)[0],
+					j = d.createElement(s),
+					dl = l != "dataLayer" ? "&l=" + l : "";
+				j.async = true;
+				j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+				f.parentNode.insertBefore(j, f);
+			})(window, document, "script", "dataLayer", "GTM-NXZMQSS");
+		</script>
+        <link rel="stylesheet" href="/extra-assets/ijaboCropTool/ijaboCropTool.min.css">
+        <link rel="stylesheet" href="/extra-assets/jquery-ui-1.14.1/jquery-ui.structure.min.css">
+        <link rel="stylesheet" href="/extra-assets/jquery-ui-1.14.1/jquery-ui.structure.min.css">
+        <link rel="stylesheet" href="/extra-assets/jquery-ui-1.14.1/jquery-ui.theme.min.css">
+        <style>
+            .swal2-popup{
+                font-size: 0.78rem;
+            }
+        </style>
+        @stack('stylesheets')
+		<!-- End Google Tag Manager -->
+	</head>
+	<body>
+>>>>>>> origin
 {{--		<div class="pre-loader">--}}
 {{--			<div class="pre-loader-box">--}}
 {{--				<div class="loader-logo">--}}
@@ -514,6 +545,7 @@
                             </ol>
                         </nav>
                     </div>
+<<<<<<< HEAD
                     <li>
                         <a href="{{ route('admin.profile') }}" no-arrow {{ Route::is('admin.profile') ? 'active' : '' }}">
 
@@ -635,6 +667,66 @@
 <script src="/extra-assets/jquery-ui-1.14.1/jquery-ui.min.js"></script>
 <script>
     if( navigator.userAgent.indexOf("firefox") != -1){
+=======
+					<a
+						class="github-button"
+						href="https://github.com/dropways/deskapp/fork"
+						data-color-scheme="no-preference: dark; light: light; dark: light;"
+						data-icon="octicon-repo-forked"
+						data-size="large"
+						data-show-count="true"
+						aria-label="Fork dropways/deskapp dashboard on GitHub"
+						>Fork</a
+					>
+				</div>
+			</div>
+			<div class="text-center mb-1">
+				<div>
+					<a
+						href="https://github.com/dropways/deskapp"
+						target="_blank"
+						class="btn btn-light btn-block btn-sm"
+					>
+						<span class="text-danger weight-600">STAR US</span>
+						<span class="weight-600">ON GITHUB</span>
+						<i class="fa fa-github"></i>
+					</a>
+				</div>
+				<script
+					async
+					defer="defer"
+					src="https://buttons.github.io/buttons.js"
+				></script>
+			</div>
+			<a
+				href="https://github.com/dropways/deskapp"
+				target="_blank"
+				class="btn btn-success btn-sm mb-0 mb-md-3 w-100"
+			>
+				DOWNLOAD
+				<i class="fa fa-download"></i>
+			</a>
+			<p class="font-14 text-center mb-1 d-none d-md-block">
+				Available in the following technologies:
+			</p>
+			<div class="d-none d-md-flex justify-content-center h1 mb-0 text-danger">
+				<i class="fa fa-html5"></i>
+			</div>
+		</div>
+		<button class="welcome-modal-btn">
+			<i class="fa fa-download"></i> Download
+		</button>
+		<!-- welcome modal end -->
+		<!-- js -->
+		<script src="back/vendors/scripts/core.js"></script>
+		<script src="back/vendors/scripts/script.min.js"></script>
+		<script src="back/vendors/scripts/process.js"></script>
+		<script src="back/vendors/scripts/layout-settings.js"></script>
+        <script src="/extra-assets/ijaboCropTool/ijaboCropTool.min.js"></script>
+        <script src="/extra-assets/jquery-ui-1.14.1/jquery-ui.min.js"></script>
+        <script>
+        if( navigator.userAgent.indexOf("firefox") != -1){
+>>>>>>> origin
         history.pushState(null,null, document.URL);
         window.addEventListener('showToastr', function (event){
             toastr.remove();

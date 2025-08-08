@@ -23,6 +23,14 @@ class AdminCategoriesSubcategoriesList extends Component
             ]);
             $this->showToaster('success','Categories ordering has been successfully updated');
         }
+            foreach ($positions as $position){
+                $index = $position[0];
+                $newPosition = $position[1];
+                Category::where('id',$index)->update([
+                    'ordering' => $newPosition
+                ]);
+                $this->showToaster('success','Categories ordering has been successfully updated');
+            }
     }
     public function deleteCategory($category_id){
         $category = Category::findOrFail($category_id);
@@ -42,29 +50,7 @@ class AdminCategoriesSubcategoriesList extends Component
         }
 
     }
-    public function addSubCategory(Request $request){
-        $independent_subcategories = SubCategory::where('is_child_of',0)->get();
-        $categories = Category::all();
-        $data = [
-            'pageTitle'=> 'add sub category',
-            'categories' => $independent_subcategories
-        ];
-        return view('back.pages.admin.add-subcategory',$data);
 
-    }
-    public function storeSubCategory(Request $request)
-    {
-        $request->validate([
-            'parent_category' => 'required|exists:categories,id',
-            'subcategory_name' => 'required|min:5|unique:sub_categories,subcategory_name'
-        ],[
-            'parent_category.required' => ':Attribute is required',
-            'parent_category_exists' => ':Attribute is not exist in categories table',
-            'subcategory_name.required' => ':Attribute is required',
-            'subcategory_name.min' => ':Attribute must contain at least 5 character',
-            'subcategory_name.unique' => ':Attribute is already exist',
-        ]);
-    }
 
     public function showToaster($type,$message){
         return $this->dispatchBrowserEvent('showToaster',[
@@ -76,7 +62,8 @@ class AdminCategoriesSubcategoriesList extends Component
     public function render()
     {
         return view('livewire.admin-categories-subcategories-list',[
-            'categories' => Category::orderBy('ordering','asc')->get()
+            'categories' => Category::orderBy('ordering','asc')->get(),
+            'subcategories' => SubCategory::orderBy('ordering','asc')->get()
         ]);
     }
 }

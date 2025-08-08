@@ -33,7 +33,8 @@
                                 <td>
                                     {{ $item->category_name }}
                                 </td>
-                                <td>-
+                                <td>
+                                    {{ $item->subcategories->count() }}
                                 </td>
                                 <td>
                                     <div class="table-actions">
@@ -82,17 +83,16 @@
                         </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
+                        @forelse($subcategories as $item)
                         <tr>
                             <td>
-                                <div class="avatar mr-2">
-                                    <img src="" width="50" height="50">
-                                </div>
+                               {{ $item->subcategory_name }}
                             </td>
                             <td>
-                                mobile and computer
+                               {{ $item->parentcategory->category_name }}
                             </td>
                             <td>
-                                electronics
+                                {{ $item->children->count() }}
                             </td>
                             <td>
                                 none
@@ -109,7 +109,13 @@
                                 </div>
                             </td>
                         </tr>
-
+                        @empty
+                            <tr>
+                                <td>
+                                    <span class="text-danger">No sub category found</span>
+                                </td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>

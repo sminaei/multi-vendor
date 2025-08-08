@@ -39,6 +39,7 @@
             }).then(function (result){
                 if(result.value){
                     window.livewire.emit('deleteCategory',category_id)
+                   window.livewire.emit('deleteCategory',category_id)
                 }
             });
         })
