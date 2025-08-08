@@ -22,16 +22,16 @@
                             <th>Actions</th>
                         </tr>
                         </thead>
-                        <tbody class="table-border-bottom-0">
+                        <tbody class="table-border-bottom-0" id="sortable_categories">
                         @forelse($categories as $item)
-                            <tr>
+                            <tr data-index="{{ $item->id }}" data-ordering="{{ $item->ordering }}">
                                 <td>
                                     <div class="avatar mr-2">
                                         <img src="/images/categories/{{ $item->category_image }}" width="50" height="50">
                                     </div>
                                 </td>
                                 <td>
-                                   {{ $item->category_name }}
+                                    {{ $item->category_name }}
                                 </td>
                                 <td>-
                                 </td>
@@ -40,7 +40,7 @@
                                         <a href="{{ route('admin.manage-categories.edit-category',[ 'id'=> $item->id ]) }}" class="text-primary">
                                             <i class="dw dw-edit2"></i>
                                         </a>
-                                        <a href="" class="text-danger">
+                                        <a href="javascript:;" class="text-danger deleteCategoryBtn" data-id="{{ $item->id }}">
                                             <i class="dw dw-delete-3"></i>
                                         </a>
                                     </div>
@@ -66,7 +66,7 @@
                         <h4>Sub Categories</h4>
                     </div>
                     <div class="pull-right">
-                        <a href="" class="btn btn-primary btn-sm" type="button">
+                        <a href="{{ route('admin.manage-categories.add-subcategory') }}" class="btn btn-primary btn-sm" type="button">
                             <i class="fa fa-plus"> </i>
                             Add Sub Category</a>
                     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
@@ -13,7 +14,7 @@ class CategoriesController extends Controller
     public function catSubcatList(Request $request)
     {
         $data = [
-            'pageTitle' => 'Categories & sub categories maagmet'
+            'pageTitle' => 'Categories & sub categories management'
         ];
         return view('back.pages.admin.cats-subcats-list', $data);
 
@@ -131,6 +132,41 @@ class CategoriesController extends Controller
                 }
             }
         }
+    }
+    public function addSubCategory(Request $request){
+        $independent_subcategories = SubCategory::where('is_child_of',0)->get();
+        $categories = Category::all();
+        $data = [
+            'pageTitle'=> 'add sub category',
+            'categories' => $independent_subcategories
+        ];
+        return view('back.pages.admin.add-subcategory',$data);
+
+    }
+    public function storeSubCategory(Request $request)
+    {
+        $request->validate([
+            'parent_category' => 'required|exists:categories,id',
+            'subcategory_name' => 'required|min:5|unique:sub_categories,subcategory_name'
+        ],[
+            'parent_category.required' => ':Attribute is required',
+            'parent_category_exists' => ':Attribute is not exist in categories table',
+            'subcategory_name.required' => ':Attribute is required',
+            'subcategory_name.min' => ':Attribute must contain at least 5 character',
+            'subcategory_name.unique' => ':Attribute is already exist',
+        ]);
+        $subcategory = new SubCategory();
+        $subcategory->category_id = $request->parent_category;
+        $subcategory->subcategory_name = $request->subcategory_name;
+        $subcategory->is_child_of = $request->is_child_of;
+        $saved =  $subcategory->save();
+        if($saved){
+            return redirect()->route('admin.manage-categories.add-subcategory')->with('succes', '<b>' . ucfirst($request->subcategory_name) . '</b> sub category has been successfully added');
+        }else{
+            return redirect()->route('admin.manage-categories.add-subcategory')->with('fail', 'something went wrong');
+
+        }
+
     }
 }
 
