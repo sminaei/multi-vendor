@@ -27,6 +27,6 @@ class SubCategory extends Model
         return $this->belongsTo(Category::class,'category_id','id');
     }
     public  function children(){
-        return $this->hasMany(SubCategory::class,'is_child_of','id');
+        return $this->hasMany(SubCategory::class,'is_child_of','id')->orderBy('ordering','asc');
     }
 }

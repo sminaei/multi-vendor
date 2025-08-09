@@ -43,5 +43,63 @@
                 }
             });
         })
+
+        $('table tbody#sortable_subcategories').sortable({
+            cursor: "move",
+            update: function (event,ui){
+                $(this).children().each(function (index){
+                    if($(this).attr("data-ordering") != (index+1)){
+                        $(this).attr("data-ordering",(index+1)).addClass("updated")
+                    }
+                });
+                var positions = [];
+                $(".updated").each(function (){
+                    positions.push([$(this).attr("data-index"),$(this).attr("data-ordering")]);
+                    $(this).removeClass("updated");
+                });
+                // alert(positions);
+                window.livewire.emit("updateSubCategoryOrdering",positions);
+            }
+        });
+        $('ul#sortable_child_subcategories').sortable({
+            cursor: "move",
+            update: function (event,ui){
+                $(this).children().each(function (index){
+                    if($(this).attr("data-ordering") != (index+1)){
+                        $(this).attr("data-ordering",(index+1)).addClass("updated")
+                    }
+                });
+                var positions = [];
+                $(".updated").each(function (){
+                    positions.push([$(this).attr("data-index"),$(this).attr("data-ordering")]);
+                    $(this).removeClass("updated");
+                });
+                // alert(positions);
+                window.livewire.emit("updateChildSubCategoryOrdering",positions);
+            }
+        });
+        $(document).on('click','.deleteSubCategoryBtn','.deleteChildSubCategoryBtn' , function (e){
+            e.preventDefault();
+            var subcategory_id = $(this).data('id');
+            var title = $(this).data('title');
+            // alert("title: "+title+' ID: '+ subcategory_id);
+            swal.fire({
+                title: 'are you sure?',
+                html: 'you want to delete category',
+                showCloseButton:true,
+                showCancelButton:true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'yes,delete',
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#30856d',
+                width: 300,
+                allowOutsideClick:false
+            }).then(function (result){
+                if(result.value){
+                    window.livewire.emit('deleteSubCategory',subcategory_id)
+                    window.livewire.emit('deleteCategory',category_id)
+                }
+            });
+        })
     </script>
 @endpush
