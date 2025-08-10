@@ -62,8 +62,8 @@
 
 
         window.addEventListener('updateAdminInfo', function (event) {
-            $('#adminProfileName').html(event.detail.adminName);
-            $('#adminProfileEmail').html(event.detail.adminEmail);
+            $('#adminProfileName').html(event.detail[0].adminName);
+            $('#adminProfileEmail').html(event.detail[0].adminEmail);
         })
 
         $('input[type="file"][name="adminProfilePictureFile"][id="adminProfilePictureFile"]').ijaboCropTool({
@@ -74,12 +74,12 @@
             buttonsColor: ['#30bf7d', '#ee5155', -15],
             processUrl: {{ route('admin.change-profile-picture') }},
             onSuccess: function (message, element, status) {
-                livewire.emit('updateAdminSellerHeaderInfo')
-                toaster.success(message);
+                Livewire.dispatch('updateAdminSellerHeaderInfo')
+                toastr.success(message);
 
             },
             onError: function (message, element, status) {
-                toaster.error(message);
+                toastr.error(message);
             }
         });
 

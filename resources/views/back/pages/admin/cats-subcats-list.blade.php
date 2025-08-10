@@ -75,7 +75,7 @@
                     $(this).removeClass("updated");
                 });
                 // alert(positions);
-                window.livewire.emit("updateChildSubCategoryOrdering",positions);
+                Livewire.dispatch("updateChildSubCategoryOrdering",[positions]);
             }
         });
         $(document).on('click','.deleteSubCategoryBtn','.deleteChildSubCategoryBtn' , function (e){
@@ -96,8 +96,8 @@
                 allowOutsideClick:false
             }).then(function (result){
                 if(result.value){
-                    window.livewire.emit('deleteSubCategory',subcategory_id)
-                    window.livewire.emit('deleteCategory',category_id)
+                   Livewire.dispatch('deleteSubCategory',[subcategory_id])
+
                 }
             });
         })

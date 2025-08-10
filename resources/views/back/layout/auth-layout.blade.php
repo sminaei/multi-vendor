@@ -71,7 +71,13 @@
 				<div class="login-menu">
 					<ul>
                         @if(!Route::is('admin.*'))
-                            <li><a href="register.html">Register</a></li>
+                            @if(Route::is('seller.login'))
+                                <li><a href="{{ route('seller.register') }}">Register</a></li>
+                            @else
+                                <li><a href="{{ route('seller.login') }}">Register</a></li>
+
+                            @endif
+
 
                         @endif
 					</ul>
@@ -178,6 +184,27 @@
                     history.pushState(null,null, document.URL);
                 })
             }
+        </script>
+        <script>
+            window.addEventListener('showToaster',function (event){
+                toastr.remove();
+                if(event.detail[0].type === 'info'){ toastr.info(event.detail[0].message); }
+                else if(event.detail[0].type === 'success'){ toastr.success(event.detail[0].message); }
+                else if(event.detail[0].type === 'error'){ toastr.error(event.detail[0].message); }
+                else if(event.detail[0].type === 'warning'){ toastr.warning(event.detail[0].message); }
+                else { return false;}
+
+            })
+            document.addEventListener('livewire:init', ()=>{
+                Livewire.on('showToastr',event=>{
+                    toastr.remove();
+                    if(event[0].type === 'info'){ toastr.info(event[0].message); }
+                    else if(event[0].type === 'success'){ toastr.success(event[0].message); }
+                    else if(event[0].type === 'error'){ toastr.error(event[0].message); }
+                    else if(event[0].type === 'warning'){ toastr.warning(event[0].message); }
+                    else { return false;}
+                });
+            })
         </script>
 		<!-- Google Tag Manager (noscript) -->
         @livewireScripts

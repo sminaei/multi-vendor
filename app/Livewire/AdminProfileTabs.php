@@ -11,7 +11,7 @@ class AdminProfileTabs extends Component
 {
     public $tab = null;
     public $tabname = 'personal_details';
-    protected $queryString = ['tab'];
+    protected $queryString = ['tab' => ['keep' => true]];
     public $name,$username,$email,$admin_id;
     public $current_password, $new_password, $new_password_confirmation;
 
@@ -49,7 +49,7 @@ class AdminProfileTabs extends Component
         $this->showToaster('success','your personal details updated');
     }
     public function showToaster($type,$message){
-        return $this->dispatchBrowserEvent('showToaster',[
+        return $this->dispatch('showToaster',[
             'type' => $type,
             'message' => $message
         ]);

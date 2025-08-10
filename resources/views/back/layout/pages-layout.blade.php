@@ -61,8 +61,7 @@
         }
         gtag("js", new Date());
 
-<<<<<<< HEAD
-        gtag("config", "G-GBZ3SGGX85");
+
     </script>
     <!-- Google Tag Manager -->
     <script>
@@ -90,7 +89,7 @@
     <!-- End Google Tag Manager -->
 </head>
 <body>
-=======
+
 			gtag("config", "G-GBZ3SGGX85");
 		</script>
 		<!-- Google Tag Manager -->
@@ -119,7 +118,6 @@
 		<!-- End Google Tag Manager -->
 	</head>
 	<body>
->>>>>>> origin
 {{--		<div class="pre-loader">--}}
 {{--			<div class="pre-loader-box">--}}
 {{--				<div class="loader-logo">--}}
@@ -545,7 +543,6 @@
                             </ol>
                         </nav>
                     </div>
-<<<<<<< HEAD
                     <li>
                         <a href="{{ route('admin.profile') }}" no-arrow {{ Route::is('admin.profile') ? 'active' : '' }}">
 
@@ -667,7 +664,6 @@
 <script src="/extra-assets/jquery-ui-1.14.1/jquery-ui.min.js"></script>
 <script>
     if( navigator.userAgent.indexOf("firefox") != -1){
-=======
 					<a
 						class="github-button"
 						href="https://github.com/dropways/deskapp/fork"
@@ -722,17 +718,28 @@
 		<script src="back/vendors/scripts/script.min.js"></script>
 		<script src="back/vendors/scripts/process.js"></script>
 		<script src="back/vendors/scripts/layout-settings.js"></script>
+
+
+        // if( navigator.userAgent.indexOf("firefox") != -1){
+        // history.pushState(null,null, document.URL);
+        // window.addEventListener('showToastr', function (event){
+        //     toastr.remove();
+        //     history.pushState(null,null, document.URL);
+    //     })
+    // }
+        <script src="/extra-assets/ijabo/ijabo.min.js"></script>
         <script src="/extra-assets/ijaboCropTool/ijaboCropTool.min.js"></script>
         <script src="/extra-assets/jquery-ui-1.14.1/jquery-ui.min.js"></script>
-        <script>
-        if( navigator.userAgent.indexOf("firefox") != -1){
->>>>>>> origin
-        history.pushState(null,null, document.URL);
-        window.addEventListener('showToastr', function (event){
+<script>
+        window.addEventListener('showToaster',function (event){
             toastr.remove();
-            history.pushState(null,null, document.URL);
+            if(event.detail[0].type === 'info'){ toastr.info(event.detail[0].message); }
+            else if(event.detail[0].type === 'success'){ toastr.success(event.detail[0].message); }
+            else if(event.detail[0].type === 'error'){ toastr.error(event.detail[0].message); }
+            else if(event.detail[0].type === 'warning'){ toastr.warning(event.detail[0].message); }
+            else { return false;}
+
         })
-    }
 </script>
 <!-- Google Tag Manager (noscript) -->
 
