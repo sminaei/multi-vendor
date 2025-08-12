@@ -84,22 +84,26 @@
 
                     <div class="product-list" data-aos="fade-up">
                         <div class="row">
+                        @if(count(get_categories()) > 0)
 
                             <div class="col-md-3">
-                                <div class="product-item">
-                                    <figure class="product-style">
-                                        <img src="/front/images/product-item1.jpg" alt="Books" class="product-item">
-                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-                                            Cart</button>
-                                    </figure>
-                                    <figcaption>
-                                        <h3>Simple way of piece life</h3>
-                                        <span>Armor Ramsey</span>
-                                        <div class="item-price">$ 40.00</div>
-                                    </figcaption>
-                                </div>
-                            </div>
+                                @foreach(get_categories() as $category)
+                                    <div class="product-item">
+                                        <figure class="product-style">
+                                            <img src="/images/categories/{{ $category->category_image }}" alt="Books" class="product-item">
+                                            <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
+                                                Cart</button>
+                                        </figure>
+                                        <figcaption>
+                                            <h3>{{ $category->category_name }}</h3>
+                                            <span>Armor Ramsey</span>
+                                            <div class="item-price">$ 40.00</div>
+                                        </figcaption>
+                                    </div>
+                                @endforeach
 
+                            </div>
+                            @endif
                             <div class="col-md-3">
                                 <div class="product-item">
                                     <figure class="product-style">
