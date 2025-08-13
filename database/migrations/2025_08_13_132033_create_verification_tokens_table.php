@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sub_categories', function (Blueprint $table) {
+        Schema::create('verification_tokens', function (Blueprint $table) {
             $table->id();
-            $table->integer('category_id');
-            $table->string('subcategory_name');
-            $table->string('subcategory_slug');
-            $table->integer('is_child_of')->default(0);
-            $table->integer('ordering')->default(10000);
+            $table->string('user_type');
+            $table->string('email');
+            $table->string('token');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub_categories');
+        Schema::dropIfExists('verification_tokens');
     }
 };

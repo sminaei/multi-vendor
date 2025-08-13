@@ -26,4 +26,11 @@ class SellerController extends Controller
         ];
         return view('back.pages.seller.home',$data);
     }
+    public function createSeller(Request $request){
+
+    }
+    public function registerSuccess(Request $request){
+        return view('back.pages.seller.register-success');
+
+    }
 }
