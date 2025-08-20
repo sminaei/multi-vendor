@@ -7,7 +7,7 @@ Route::get('/seller', function () {
     return view('welcome');
 });
 Route::prefix('seller')->name('seller.')->group(function (){
-    Route::middleware([])->group(function (){
+    Route::middleware(['guest::seller','PreventBackHistory'])->group(function (){
         Route::controller(SellerController::class)->group(function ()
         {
             Route::get('/login','login')->name('login');
@@ -19,7 +19,7 @@ Route::prefix('seller')->name('seller.')->group(function (){
 
         });
     });
-    Route::middleware([])->group(function (){
+    Route::middleware(['guest::seller','PreventBackHistory'])->group(function (){
         Route::controller(SellerController::class)->group(function (){
             Route::get('/','home')->name('home');
             Route::post('/logout','logoutHandler')->name('logout');
