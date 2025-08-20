@@ -3,57 +3,90 @@
 @section('content')
     <div class="login-box bg-white box-shadow border-radius-10">
         <div class="login-title">
-            <h2 class="text-center text-primary">Create Seller Account</h2>
+            <h2 class="text-center text-primary">Seller Login</h2>
         </div>
-        <form action="">
+        <form action="{{route('seller.login-handler')}}" method="post">
             @csrf
             <x-alert.form-alert/>
-            <div class="form-group">
-                <label for="">Full Name</label>
-                <input type="text" class="form-control" placeholder="enter full name" name="name" value="{{ old('name') }}">
-                @error('email')
-                <span class="text-danger ml-2">
-                    {{ $message }}
-                </span>
-                @enderror
+            @if(\Illuminate\Support\Facades\Session::get('fail'))
+                <div class="alert alert-danger">
+                    {{ \Illuminate\Support\Facades\Session::get('fail')}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            @if(\Illuminate\Support\Facades\Session::get('success'))
+                <div class="alert alert-success">
+                    {{ \Illuminate\Support\Facades\Session::get('success')}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            @if(Session::get('info'))
+                <div class="alert alert-info">
+                    {{ \Illuminate\Support\Facades\Session::get('info')}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            <div class="input-group custom">
+                <input
+                    type="text"
+                    class="form-control form-control-lg"
+                    placeholder="Email/Username"
+                    name="login_id"
+                    value="{{old('login_id')}}"
+                />
+                <div class="input-group-append custom">
+                    <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="">Email</label>
-                <input type="text" class="form-control" placeholder="enter email" name="email" value="{{ old('email') }}">
-                @error('email')
-                <span class="text-danger ml-2">
-                    {{ $message }}
-                </span>
-                @enderror
+            @error('error_id')
+            <div class="d-block text-danger" style="margin-top: -25px;margin-bottom: 15px">
+                {{ $message}}
             </div>
-            <div class="form-group">
-                <label for="">Password</label>
-                <input type="password" class="form-control" placeholder="enter password" name="password" value="{{ old('p') }}">
-                @error('password')
-                <span class="text-danger ml-2">
-                    {{ $message }}
-                </span>
-                @enderror
-
+            @enderror()
+            <div class="input-group custom">
+                <input
+                    type="password"
+                    class="form-control form-control-lg"
+                    placeholder="**********"
+                    name="password"
+                />
+                <div class="input-group-append custom">
+                    <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="">Confirm Password</label>
-                <input type="password" class="form-control" placeholder="ReType password" name="confirm_password">
-                @error('confirm_password')
-                <span class="text-danger ml-2">
-                    {{ $message }}
-                </span>
-                @enderror
-
+            @error('error_id')
+            <div class="d-block text-danger" style="margin-top: -25px;margin-bottom: 15px">
+                {{ $message}}
+            </div>
+            @enderror()
+            <div class="row pb-30">
+                <div class="col-6">
+                    <div class="custom-control custom-checkbox">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            id="customCheck1"
+                        />
+                        <label class="custom-control-label" for="customCheck1">Remember</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="forgot-password">
+                        <a href="{{ route('admin.forgot-password') }}">Forgot Password</a>
+                    </div>
+                </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-sm-12">
                     <div class="input-group mb-0">
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Create Account</button>
-                    </div>
-                    <div class="font-16 weight-600 pt-10 pb-10 text-center" data-color="#707373" style="color: rgb(112,115,115);">OR</div>
-                    <div class="input-group mb-0">
-                        <a href="{{ route('seller.login') }}" class="btn btn-outline-primary btn-lg btn-block">Sign In</a>
+                        <input class="btn btn-primary btn-lg btn-block" type="submit" value="Sign In">
+
                     </div>
                 </div>
             </div>

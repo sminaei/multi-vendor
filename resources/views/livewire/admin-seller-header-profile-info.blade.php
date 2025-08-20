@@ -25,11 +25,11 @@
                     <a class="dropdown-item" href="faq.html"
                     ><i class="dw dw-help"></i> Help</a
                     >
-                    <a class="dropdown-item" href="{{route('admin.logout_handler')}}"
-                       onclick="event.preventDefault();document.getElementById('adminLogoutForm').submit();"
+                    <a class="dropdown-item" href="{{route('seller.logout')}}"
+                       onclick="event.preventDefault();document.getElementById('sellerLogoutForm').submit();"
                     ><i class="dw dw-logout"></i> Log Out</a
                     >
-                    <form action="{{route('admin.logout_handler')}}" id="adminLogoutForm" method="post">@csrf</form>
+                    <form action="{{route('seller.logout')}}" id="adminLogoutForm" method="post" id="sellerLogoutForm">@csrf</form>
                 </div>
             </div>
         </div>

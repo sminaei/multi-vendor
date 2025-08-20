@@ -3,34 +3,147 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Seller;
+use App\Models\VerificationToken;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use function Laravel\Prompts\password;
 
 class SellerController extends Controller
 {
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $data = [
             'pageTitle' => 'seller login'
         ];
-        return view('back.pages.seller.auth.login',$data);
+        return view('back.pages.seller.auth.login', $data);
     }
-    public function register(Request $request){
+
+    public function register(Request $request)
+    {
         $data = [
             'pageTitle' => 'Create seller account'
         ];
-        return view('back.pages.seller.auth.register',$data);
+        return view('back.pages.seller.auth.register', $data);
 
     }
-    public function home(Request $request){
+
+    public function home(Request $request)
+    {
         $data = [
             'pageTitle' => 'Create seller account'
         ];
-        return view('back.pages.seller.home',$data);
+        return view('back.pages.seller.home', $data);
     }
-    public function createSeller(Request $request){
 
+    public function createSeller(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:sellers',
+            'password' => 'min:5|required_with:confirm_password|same:confirm_password',
+            'confirm_password' => 'min:5',
+        ]);
+        $seller = new Seller();
+        $seller->name = $request->name;
+        $seller->email = $request->email;
+        $seller->password = Hash::make($request->password);
+        $saved = $seller->save();
+
+        if ($saved) {
+            $token = base64_encode(Str::random(64));
+            VerificationToken::create([
+                'user_type' => 'seller',
+                'email' => 'seller',
+                'token' => $token,
+            ]);
+            $actionLink = route('seller.verify', ['token' => $token]);
+            $data['action_link'] = $actionLink;
+            $data['seller_name'] = $request->name;
+            $data['seller_email'] = $request->email;
+
+            $mail_body = view('email-templates.seller-verify-template', $data)->render();
+            $mailConfig = array(
+                'mail_from_email' => env('EMAIL_FROM_ADDRESS'),
+                'mail_from_name' => env('EMAIL_FROM_NAME'),
+                'mail_recipient_email' => $request->email,
+                'mail_recipient_name' => $request->name,
+                'mail_subject' => 'Verify seller account',
+                'mail_body' => $mail_body
+            );
+            if (sendEmail($mailConfig)) {
+                return redirect()->route('seller.register-success');
+
+            } else {
+                return redirect()->route('seller.register')->with('fail', 'something went wrong while sending verification link');
+            }
+        } else {
+            return redirect()->route('seller.register')->with('fail', 'something went wrong');
+        }
     }
-    public function registerSuccess(Request $request){
+
+    public function verifyAccount(Request $request, $token)
+    {
+        $veifyToken = VerificationToken::where('token', $token)->first();
+        if (!is_null($veifyToken)) {
+            $seller = Seller::where('email', $veifyToken->email)->first();
+            if (!$seller->verifed) {
+                $seller->verified = 1;
+                $seller->save();
+                return redirect()->route('seller.login')->with('success', 'your email is verified');
+            } else {
+                return redirect()->route('seller.login')->with('info', 'your emails is now verified');
+            }
+        } else {
+            return redirect()->route('seller.register')->with('fail' . 'invalid token');
+        }
+    }
+
+    public function registerSuccess(Request $request)
+    {
         return view('back.pages.seller.register-success');
 
+    }
+
+    public function loginHandler(Request $request)
+    {
+        $fieldType = filter_var($request->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        if ($fieldType == 'email') {
+            $request->validate([
+                'login_id' => 'required|email|exists:sellers,email',
+                'password' => 'required|min:5|max:45',
+            ], [
+                'login_id.required' => 'email or username is required',
+                'login_id.email' => 'invalid email address',
+                'login_id.exists' => ' email is not exist',
+                'password.required' => ' password is  required',
+            ]);
+        } else {
+            $request->validate([
+                'login_id' => 'required|exists:sellers,username',
+                'password' => 'required|min:5|max:45',
+            ], [
+                'login_id.required' => 'email or username is required',
+                'login_id.exists' => ' username is not exist',
+                'password.required' => ' password is  required',
+            ]);
+            $creds = array(
+                $fieldType => $request->login_id,
+                'password' => $request->password
+            );
+            if (Auth::guard('seller')->attempt($creds)) {
+                return redirect()->route('seller.home');
+            } else {
+                return redirect()->route('seller.login')->withInput()->with('fail', 'incorrect credentials');
+            }
+        }
+    }
+
+    public function logoutHandler(Request $request)
+    {
+        Auth::guard('seller')->logout();
+        return redirect()->route('seller.login')->with('fail', 'you are logged out');
     }
 }
