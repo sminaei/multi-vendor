@@ -155,4 +155,54 @@ class SellerController extends Controller
         Auth::guard('seller')->logout();
         return redirect()->route('seller.login')->with('fail', 'you are logged out');
     }
+
+    public function forgotPassword(Request $request)
+    {
+    $data = [
+        'pageTitle' => 'forfot password'
+    ];
+    return view('back.pages.seller.auth.forgot', $data);
+    }
+    public function sendPasswordResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:sellers,email'
+        ], [
+            'email.required' => 'email :attribute is required',
+            'email.email' => 'invalid email address',
+            'email.exists' => 'The :attribute is not exist to our system'
+        ]);
+        $seller = Seller::where('email', $request->email)->first();
+        $token = base64_encode(Str::random(64));
+        $oldToken = DB::table('password_reset_tokens')->where(['email' => $seller->email, 'guard' => constGuards::SELLER])->
+        first();
+        if ($oldToken) {
+            DB::table('password_reset_tokens')->where(['email' => $seller->email, 'guard' => constGuards::SELLER])->update([
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
+        } else {
+            DB::table('password_reset_tokens')->insert([
+                'email' => $seller->email,
+                'guard' => constGuards::SELLER,
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
+        }
+        $actionLink = route('seller.reset.password', ['token' => $token, 'email' => urlencode($seller->email)]);
+        $data['actionLink'] = $actionLink;
+        $data['seller'] = $seller;
+        $mail_body = view('email-templates.seller-forgot-email-template', $data)->render();
+        $emailConfig = array(
+            'mail_from_email' => env('EMAIL_FROM_ADDRESS'),
+            'mail_from_name' => env('EMAIL_FROM_NAME'),
+            'mail_recipient_email' => $seller->email,
+            'mail_recipient_name' => $seller->name,
+            'mail_subject' => 'reset password',
+            'mail_body' => $mail_body
+        );
+    }
+
+
+
 }
