@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Seller;
 use App\Models\VerificationToken;
 use Carbon\Carbon;
+use constDefaults;
+use constGuards;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use function Laravel\Prompts\password;
@@ -189,7 +192,7 @@ class SellerController extends Controller
                 'created_at' => Carbon::now()
             ]);
         }
-        $actionLink = route('seller.reset.password', ['token' => $token, 'email' => urlencode($seller->email)]);
+        $actionLink = route('seller.reset-password', ['token' => $token, 'email' => urlencode($seller->email)]);
         $data['actionLink'] = $actionLink;
         $data['seller'] = $seller;
         $mail_body = view('email-templates.seller-forgot-email-template', $data)->render();
@@ -201,6 +204,58 @@ class SellerController extends Controller
             'mail_subject' => 'reset password',
             'mail_body' => $mail_body
         );
+        if(sendEmail($emailConfig)){
+            return redirect()->route('seller.forgot-password')->with('success','we have email to your password to link');
+        }else{
+            return redirect()->route('seller.forgot-password')->with('fail','something went wrong');
+        }
+    }
+
+    public function showResetForm(Request $request,$token = null){
+    $get_token = DB::table('password_reset_token')->where(['token' => $token,'guard'=> constGuards::SELLER])->first();
+
+   if ($get_token){
+    $diffMins = Carbon::createFromFormat('Y-m-d H:i:s',$get_token->created_at)->diffInMinutes(Carbon::now());
+    if ($diffMins > constDefaults::tokenExpiredMinutes){
+        return redirect()->route('seller.forgot-password')->with('fail','token expired');
+    }else{
+        return view('back.pages.seller.auth.reset')->with(['token' => $token]);
+    }
+   }else{
+       return redirect()->route('seller.forgot-password',[$token => $token])->with('fail','invalid token');
+
+   }
+    }
+
+    public function resetPasswordHandler(Request $request)
+    {
+        $request->validate([
+            'new_password' => 'required|min:5|max:45|required_with:confirm_new_password|same:confirm_new_password',
+            'confirm_new_password' => 'required'
+        ]);
+        $token = DB::table('password_reset_tokens')
+            ->where(['token' => $request->token,'guard' => constGuards::SELLER])->first();
+        $seller = Seller::where('email',$token->email)->first();
+        Seller::where('email',$seller->email)->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+        DB::table('password_reset_tokens')->where([
+            'email' => $seller->email,
+            'token' => $seller->token,
+            'guard' => constGuards::SELLER
+        ])->delete();
+        $data['seller'] = $seller;
+        $data['new_password'] = $request->new_password;
+        $mail_body= view('email-templates.seller-reset-email-template',$data);
+        $mailConfig = array(
+            'mail_from_email' => env('EMAIL_FROM_ADDRESS'),
+            'mail_from_name' => env('EMAIL_FROM_NAME'),
+            'mail_recipient_email' => $seller->email,
+            'mail_recipient_name' => $seller->name,
+            'mail_subject' => ' password',
+            'mail_body' => $mail_body
+        );
+
     }
 
 
