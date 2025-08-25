@@ -515,6 +515,12 @@
                                 ><span class="mtext">Setting</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('seller.profile') }}" class="dropdown-toggle no-arrow {{ Route::is('seller.profile') ? 'active' : '' }}">
+								<span class="micon fa fa-user"></span
+                                ><span class="mtext">Profile</span>
+                        </a>
+                    </li>
                 @else
                 @endif
             </ul>
@@ -535,7 +541,7 @@
                         <nav aria-label="breadcrumb" role="navigation">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
-                                    <a href="index.html">Home</a>
+                                    <a href="{{ route('seller.home') }}">Home</a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">
                                     blank

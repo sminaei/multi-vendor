@@ -252,10 +252,20 @@ class SellerController extends Controller
             'mail_from_name' => env('EMAIL_FROM_NAME'),
             'mail_recipient_email' => $seller->email,
             'mail_recipient_name' => $seller->name,
-            'mail_subject' => ' password',
+            'mail_subject' => ' password changed',
             'mail_body' => $mail_body
         );
+        sendEmail($mailConfig);
+        return redirect()->route('seller.login')->with('success','your passwordhas been changed');
 
+    }
+
+    public function profileView(Request $request)
+    {
+        $data = [
+            'pageTitle' => 'Profile'
+        ];
+        return view('back.pages.seller.profile',$data);
     }
 
 
