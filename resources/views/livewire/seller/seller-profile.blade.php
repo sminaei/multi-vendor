@@ -11,7 +11,7 @@
                     ><i class="fa fa-pencil"></i
                         ></a>
                     <img
-                        src="vendors/images/photo1.jpg"
+                        src="{{ $seller->picture }}"
                         alt=""
                         class="avatar-photo"
                     />
@@ -32,7 +32,7 @@
                                     <div class="img-container">
                                         <img
                                             id="image"
-                                            src="vendors/images/photo2.jpg"
+                                            src="{{  $seller->picture }}"
                                             alt="Picture"
                                         />
                                     </div>
@@ -55,12 +55,10 @@
                         </div>
                     </div>
                 </div>
-                <h5 class="text-center h5 mb-0">Ross C. Lopez</h5>
+                <h5 class="text-center h5 mb-0">{{ $seller->name }}</h5>
                 <p class="text-center text-muted font-14">
-                    Lorem ipsum dolor sit amet
+                   {{ $seller->email }}}
                 </p>
-
-
 
             </div>
         </div>
@@ -70,21 +68,19 @@
                     <div class="tab height-100-p">
                         <ul class="nav nav-tabs customtab" role="tablist">
                             <li class="nav-item">
-                                <a
-                                    class="nav-link active"
+                                <a wire:click.prevent = 'selectTab("personal_details")'
+                                    class="nav-link {{ $tab == 'personal_details' ? 'active' : ''}}"
                                     data-toggle="tab"
                                     href="#timeline"
-                                    role="tab"
-                                >Timeline</a
-                                >
+                                    role="tab">Personal details</a>
                             </li>
                             <li class="nav-item">
-                                <a
-                                    class="nav-link"
+                                <a wire:click.prevent = 'selectTab("update_password")'
+                                    class="nav-link {{ $tab == 'update_password' ? 'active' : ''}}"
                                     data-toggle="tab"
                                     href="#tasks"
                                     role="tab"
-                                >Tasks</a
+                                >update password</a
                                 >
                             </li>
                             <li class="nav-item">
@@ -100,16 +96,66 @@
                         <div class="tab-content">
                             <!-- Timeline Tab start -->
                             <div
-                                class="tab-pane fade show active"
+                                class="tab-pane fade {{ $tab == 'personal_details' ? 'active' : '' }}"
                                 id="personal_details"
                                 role="tabpanel">
                                 <div class="pd-20">
-                                    ------profile details----------
-                                </div>
+                                    <form wire:submit.prevent = 'updateSellerPersonalDetails()'>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Full Name</label>
+                                                   <input type="text" class="form-control" wire:model.live = 'name'>
+                                                   @error('name')
+                                                   <span class="text-danger">{{ $message }}</span>
+                                                   @enderror
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Email</label>
+                                                   <input type="text" class="form-control" wire:model.live = 'email' disabled>
+                                                   @error('email')
+                                                   <span class="text-danger">{{ $message }}</span>
+                                                   @enderror
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Username</label>
+                                                   <input type="text" class="form-control" wire:model.live = 'username' disabled>
+                                                   @error('username')
+                                                   <span class="text-danger">{{ $message }}</span>
+                                                   @enderror
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                   <label>Phone</label>
+                                                   <input type="text" class="form-control" wire:model.live = 'phone' disabled>
+                                                   @error('phone')
+                                                   <span class="text-danger">{{ $message }}</span>
+                                                   @enderror
+                                               </div>
+                                           </div>
+                                           <div class="col-md-12">
+                                               <div class="form-group">
+                                                   <label>Address</label>
+                                                   <input type="text" class="form-control" wire:model.live = 'address' disabled>
+                                                   @error('address')
+                                                   <span class="text-danger">{{ $message }}</span>
+                                                   @enderror
+                                               </div>
+                                           </div>
+
+                                           </div>
+                                  <button type="submit" class="btn btn-primary">Save</button>
+                                    </form>
+
                             </div>
                             <!-- Timeline Tab End -->
                             <!-- Tasks Tab start -->
-                            <div class="tab-pane fade" id="update_password" role="tabpanel">
+                            <div class="tab-pane fade {{ $tab == 'update_password' ? 'active show' : '' }}" id="update_password" role="tabpanel">
                                 <div class="pd-20 profile-task-wrap">
                                     --------update password-------
                                 </div>
