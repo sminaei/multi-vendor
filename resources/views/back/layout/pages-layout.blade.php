@@ -4,7 +4,7 @@
     <!-- Basic Page Info -->
     <meta charset="utf-8" />
     <title>@yield('pagesTitle')</title>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Site favicon -->
     <link
         rel="apple-touch-icon"
@@ -114,8 +114,10 @@
                 font-size: 0.78rem;
             }
         </style>
+            @kropifyStyles
         @stack('stylesheets')
-		<!-- End Google Tag Manager -->
+
+            <!-- End Google Tag Manager -->
 	</head>
 	<body>
 {{--		<div class="pre-loader">--}}
@@ -748,7 +750,8 @@
         })
 </script>
 <!-- Google Tag Manager (noscript) -->
-
+@kropifyScripts
+@livewireScripts
 @stack('scripts')
 <!-- End Google Tag Manager (noscript) -->
 </body>

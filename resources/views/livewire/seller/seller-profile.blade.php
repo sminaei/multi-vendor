@@ -4,17 +4,16 @@
             <div class="pd-20 card-box height-100-p">
                 <div class="profile-photo">
                     <a
-                        href="modal"
-                        data-toggle="modal"
-                        data-target="#modal"
-                        class="edit-avatar"
+                        href="javascript:;" onclick="event.preventDefault();document.getElementById(sellerProfilePictureFile)"
+                        class="edit-avatar" id="sellerProfilePicture"
                     ><i class="fa fa-pencil"></i
                         ></a>
                     <img
                         src="{{ $seller->picture }}"
                         alt=""
-                        class="avatar-photo"
-                    />
+                        class="avatar-photo"/>
+                    <input type="file" name="sellerProfilePictureFile" id="sellerProfilePictureFile"
+                    class="d-none">
                     <div
                         class="modal fade"
                         id="modal"
