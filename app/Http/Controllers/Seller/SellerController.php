@@ -11,8 +11,10 @@ use constGuards;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use SawaStacks\Utils\Kropify;
 use function Laravel\Prompts\password;
 
 class SellerController extends Controller
@@ -266,6 +268,26 @@ class SellerController extends Controller
             'pageTitle' => 'Profile'
         ];
         return view('back.pages.seller.profile',$data);
+    }
+
+    public function changeProfilePicture(Request $request)
+    {
+        $seller = Seller::findOrFail(auth('seller')->id());
+        $path = 'images/users/sellers/';
+        $file = $request->file('sellerProfilePictureFile');
+        $old_picture = $seller->getAttributes('picture');
+        $filename = 'SELLER_IMG_'.$seller->id.'.jpg';
+        $upload = Kropify::getFile($file,$filename)->maxWoh(325)->save($path);
+        $infos = $upload->getInfo();
+        if($upload){
+            if($old_picture != null && File::exists(public_path($path,$old_picture))){
+                File::delete(public_path($path,$old_picture));
+            }
+            $seller->update(['picture' => $infos->getName]);
+            return response()->json(['status' => 1,'msg' => 'your profile picture has successfully updated']);
+        }else{
+            return response()->json(['status' => 0,'msg' => 'something went wrong']);
+        }
     }
 
 
