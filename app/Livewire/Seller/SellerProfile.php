@@ -3,6 +3,7 @@
 namespace App\Livewire\Seller;
 
 use App\Models\Seller;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class SellerProfile extends Component
@@ -10,6 +11,10 @@ class SellerProfile extends Component
     public $tab = null;
     public $tabname = 'personal_details';
     public $name,$email,$username,$phone,$address;
+    public $current_password,$new_password,$new_password_confirmation;
+    protected $listeners = [
+        'updateSellerProfilePage' => '$refresh'
+    ];
     protected $queryString = ['tab' => ['keep' => true]];
 
     public function selectTab($tab){
@@ -47,6 +52,43 @@ class SellerProfile extends Component
         }
     }
 
+    public function updatePassword(){
+        $seller = Seller::findOrFail(auth('seller')->id());
+        $this->validate([
+            'current_password' => ['required',
+            function($attribute,$value,$fail) use ($seller){
+            if (Hash::check($value,$seller->password)){
+                return $fail(__('the current password is incorrect'));
+            }
+            }
+        ],
+        'new_password'=> 'required|min:5|max:45|confirmed:'
+        ]);
+        $update = $seller->update([
+            'password' => Hash::make($this->new_password)
+        ]);
+        if ($update){
+            $data['seller'] = $seller;
+            $data['new_password'] = $this->new_password;
+            $mail_body = view('email-templates.seller-reset-email-template',$data);
+            $mailConfig = array(
+               'mail_from_email' => env('EMAIL_FROM_ADDRESS'),
+                'mail_from_name' =>env('EMAIL_FROM_NAME'),
+                'mail_recipient_email'=>$seller->email,
+                'mail_recipient_name'=>$seller->name,
+                'mail_subject' => ' password changed',
+                'mail_body' => $mail_body
+            );
+            sendEmail($mailConfig);
+            $this->current_password = null;
+            $this->new_password = null;
+            $this->new_password_confirmation = null;
+            $this->showToaster('success','password successfully updated');
+
+        }else{
+            $this->showToaster('error','something went wrong');
+        }
+    }
     public function showToaster($type,$message)
     {
         return $this->dispatch('showToaster',[
