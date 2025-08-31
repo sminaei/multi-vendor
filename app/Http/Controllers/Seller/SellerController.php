@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Seller;
+use App\Models\Shop;
 use App\Models\VerificationToken;
 use Carbon\Carbon;
 use constDefaults;
@@ -288,6 +289,23 @@ class SellerController extends Controller
         }else{
             return response()->json(['status' => 0,'msg' => 'something went wrong']);
         }
+    }
+    public function shopSettings(Request $request){
+        $seller = Seller::findOrFail(auth('seller')->id());
+        $shop = Shop::where('seller_id',$seller->id)->first();
+        $shopInfo = '';
+        if(!$shop){
+            Shop::create(['seller_id' => $seller->id]);
+            $nshop = Shop::where('seller_id', $seller->id)->first();
+            $shopInfo = $nshop;
+        }else{
+            $shopInfo = $shop;
+        }
+        $data = [
+            'pageTitle' => 'Shop Setting',
+            'shopInfo' => $shopInfo
+        ];
+        return view('back.pages.seller.shop-settings',$data);
     }
 
 

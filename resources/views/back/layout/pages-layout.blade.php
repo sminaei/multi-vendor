@@ -523,6 +523,12 @@
                                 ><span class="mtext">Profile</span>
                         </a>
                     </li>
+                             <li>
+                        <a href="{{ route('seller.shop-settings') }}" class="dropdown-toggle no-arrow {{ Route::is('seller.shop-settings') ? 'active' : '' }}">
+								<span class="micon bi bi-shop"></span
+                                ><span class="mtext">Profile</span>
+                        </a>
+                    </li>
                 @else
                 @endif
             </ul>
