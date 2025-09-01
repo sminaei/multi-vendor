@@ -85,6 +85,7 @@
             font-size: 0.78rem;
         }
     </style>
+    @kropifyStyles
     @stack('stylesheets')
     <!-- End Google Tag Manager -->
 </head>
