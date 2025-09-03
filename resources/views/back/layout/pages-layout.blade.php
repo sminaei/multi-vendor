@@ -495,6 +495,16 @@
                                 ><span class="mtext">Home</span>
                         </a>
                     </li>
+                    	<li class="dropdown">
+							<a href="javascript:;" class="dropdown-toggle {{ Route::is('seller.product.*') ? 'active' : ''}}">
+								<span class="micon bi bi-bag"></span
+								><span class="mtext">Manage Products</span>
+							</a>
+							<ul class="submenu">
+								<li><a href="{{ route('seller.product.all-products')}}" class=" {{ Route::is('seller.product.all-product' ? 'active' : '')}}">All Products</a></li>
+								<li><a href=" {{ route('seller.product.add-product')}}" class=" {{ Route::is('seller.product.add-product' ? 'active' : '')}}">Add Product</a></li>
+							</ul>
+						</li>
                     <li class="dropdown">
                         <a href="{{ route('admin.manage-categories.cats-subcats-list') }}" class="dropdown-toggle no-arrow
                                 {{ Route::is('admin.manage-categories.*') ? 'active' : '' }}">

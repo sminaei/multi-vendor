@@ -73,7 +73,7 @@
                         <label for="">Shop Logo</label>
                         <input type="file" name="shop_logo" class="form-control">
                         <div class="mb-2 mt-1">
-                            <img src="" alt="" class="img-thumbnail" id="shop_logo_preview">
+                            <img src="{{ $shopInfo->shop_logo != null ? '/images/shop/'.  $shopInfo->shop_logo : '' }}" alt="" class="img-thumbnail" id="shop_logo_preview">
                         </div>
                         @error('shop_logo')
                         <span class="text-danger"> {{ $message }}</span>
@@ -81,7 +81,25 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Save Change</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>
 @endsection
+@push('scripts')
+    <script>
+    $('input[type="file"][name=shop_logo]').ijaboViewer({
+        preview: 'img#shop_logo_preview',
+        imageShape: 'square',
+        allowedExtensions: ['jpg', 'svg', 'png'],
+        onErrorShape: function(message, element) {
+            alert(message);
+        },
+        onInvalidType: function(message, element) {
+            alert(message);
+        },
+        onSuccess: function(message, element) {},
+        onErrorFileSize: 'The selected file exceeds the maximum allowed size of 1MB',
+        onErrorText: 'Please upload a valid image file',
+        initialPreview: "{{ $
+    </script>
+                    @endpush
