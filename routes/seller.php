@@ -32,7 +32,7 @@ Route::prefix('seller')->name('seller.')->group(function (){
             Route::get('/shop-setup','shopSetup')->name('shop-setup');
         });
 
-        Route::prefix('products')->name('product.')->group(function(){
+        Route::prefix('product')->name('product.')->group(function(){
             Route::controller('ProductController')->group(function(){
                 Route::get('/all','allProducts')->name('all-products');
                 Route::get('/add','addProduct')->name('add-product');
@@ -41,6 +41,6 @@ Route::prefix('seller')->name('seller.')->group(function (){
 
                 });
             });
-     
+
     });
 });

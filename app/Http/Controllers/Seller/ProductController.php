@@ -13,5 +13,6 @@ class ProductController extends Controller
                 'pageTitle' => 'Add Product',
                 'categories' => Category::orderBy('category_name', 'asc')->get()
             ];
+            return view('back.pages.seller.add-product',$data);
     }
 }
