@@ -41,7 +41,7 @@
                                 </div>
                                   <div class="form-group">
                                     <label for="">product summary:</label>
-                               <textarea id="summary" class="form-control" cols="30" rows="10"></textarea>
+                               <textarea id="summary" class="form-control summernot" cols="30" rows="10"></textarea>
                                     <span class="text-danger error_text summary_error"></span>
                                 </div>
                                 <div class="form-group">
@@ -59,12 +59,12 @@
                         <div class="card-box min-height-200px pd-20 mb-20">2
                         <div class="form-group">
                             <label for="">Category:</label>
-            <select name="category" id="category">
-            <option value="" selected>Not set</option>
-            <option value="1" >Cat 1 </option>
-            <option value="1" >Cat 2 </option>
-            <option value="1" >Cat 3 </option>
-            </select>
+                         <select name="category" id="category">
+                             <option value="" selected>Not set</option>
+                            <option value="1" >Cat 1 </option>
+                               <option value="1" >Cat 2 </option>
+                              <option value="1" >Cat 3 </option>
+                          </select>
                             <span class="text-danger error_text category_error"></span>
 
                         </div>
@@ -119,3 +119,76 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+
+    <script>
+        $(document).on('change','select#category',function(e) {
+          e.preventDefault();
+            var category_id = $(this).val();
+            var url = "{{ route('seller.product.get-product-category') }}" ;
+            if(category_id == ''){
+            $("select#subcategory").find('option').not(':first').remove();
+
+            }else{
+            $.get(url,{'category_id':category_id},function(response){
+               $("select#subcategory").find('option').not(':first').remove();
+
+                    $("select#subcategory").append(response.data);
+                },'JSON');
+            }
+        });
+           $('input[type="file"][name="product_image"]').ijaboViewer( {
+              preview: 'img#image-preview',
+               imageShape: 'square',
+               allowedExtensions: ['jpg', 'jpeg','png'],
+               onErrorShape: function(message, element) {
+                   alert(message);
+               },
+               onInvalidType: function(message, element) {
+                   alert(message);
+               },
+               onSuccess:function(message, element){
+
+               }
+
+           });
+           $('#addProductForm').on('submit',function(e){
+               e.preventDefault();
+               var summary = $('textarea.summernot').summernot('code');
+               var form = this;
+               var formdata = new FormData(form);
+               formdata.append('summary',summary);
+               $.ajax({
+                   url:$(form).attr('action'),
+                   method:$(form).attr('method'),
+                   data:formdata,
+                   processData:false,
+                   dataType:'json',
+                   contentType:false,
+                   beforeSend:function(){
+                       toastr.remove();
+                       $(form).find('span.error-text').text('');
+                   },
+                   success:function(response){
+                       toastr.remove();
+                       if(response.status == 1){
+                           $(form)[0].reset();
+                           $('textarea.summernote').summernote('code','');
+                           $('select#subcategory').find('option').not(':first').remove();
+                           $('img#image-preview').attr('src','');
+                           toastr.success(response.msg);
+                       }else{
+                           toastr.error(response.msg);
+                       }
+                   },
+                   error:function(response){
+                       toastr.remove();
+                       $.each(response.responseJson.errors, function(prefix,val){
+                            $(form).find('span. '+prefix+'_error').text(val[0]);
+                       });
+                   }
+               })
+           })
+    </script>
+
+    @endpush

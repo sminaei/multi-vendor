@@ -80,6 +80,7 @@
     <link rel="stylesheet" href="/extra-assets/jquery-ui-1.14.1/jquery-ui.structure.min.css">
     <link rel="stylesheet" href="/extra-assets/jquery-ui-1.14.1/jquery-ui.structure.min.css">
     <link rel="stylesheet" href="/extra-assets/jquery-ui-1.14.1/jquery-ui.theme.min.css">
+    <link rel="stylesheet" href="/extra-assets/summernot/summernote-bs4.min.css">
     <style>
         .swal2-popup{
             font-size: 0.78rem;
@@ -755,6 +756,15 @@
         <script src="/extra-assets/ijabo/ijabo.min.js"></script>
         <script src="/extra-assets/ijaboCropTool/ijaboCropTool.min.js"></script>
         <script src="/extra-assets/jquery-ui-1.14.1/jquery-ui.min.js"></script>
+        <script src="/extra-assets/summernote/summernote-bs4.min.js"></script>
+<script>
+    $(document).ready(function(){
+            $('.summernot').summernot({
+                height:200
+            });
+    });
+    }
+</script>
 <script>
         window.addEventListener('showToaster',function (event){
             toastr.remove();
