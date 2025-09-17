@@ -88,4 +88,12 @@ class ProductController extends Controller
             }
         }
     }
+    public function allProduct(){
+          $data = [
+            'pageTitle' => 'My Products',
+            
+        ];
+        return view('back.pages.seller.seller.products', $data);
+
+    }
 }
