@@ -166,4 +166,9 @@ class ProductController extends Controller
         }
 
     }
+    public function uploadProductImages(Request $request){
+        $product = Product::findOrFail($request->product_id);
+        $path = "images/products/additionals/";
+        $file = $request->file('file');
+    }
 }

@@ -122,9 +122,37 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">create product</button>
+                            <button type="submit" class="btn btn-primary">update product</button>
                         </div>
                     </form>
+                    <hr>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card-box min-height-200px pd-20 mb-20">
+                                <div class="title mb-2">
+                                    <h6>Additional product image</h6>
+                                </div>
+                                <form action="{{ route('seller.product.upload-images',['product_id'=> request('id')]) }} " class="dropzone">
+                                    @csrf
+                                </form>
+                                <button class="btn btn-outline-primary btn-sm mt-2" id="uploadAdditionalImagesBtn">upload</button>
+                            </div>
+                        </div>
+                        <div class="box-container mb-2">
+                            <div class="box">
+                                <img src="" alt="">
+                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash" </a>
+                            </div>
+                            <div class="box">
+                                <img src="" alt="">
+                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash" </a>
+                            </div>
+                            <div class="box">
+                                <img src="" alt="">
+                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash" </a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="pd-20 bg-white border-radius-4 box-shadow mb-30"></div>
                 </div>
                 <div class="footer-wrap pd-20 mb-20 card-box">
@@ -134,8 +162,38 @@
             </div>
         </div>
     @endsection
+@push('stylesheets')
+<link rel="stylesheet" href="/extra-assets/dropzonejs/min/dropzone.min.css">
+    <style>
+        .box-container{
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+        .box-container .box{
+            background: #423838;
+            display: block;
+            width: 110px;
+            height: 110px;
+            position: relative;
+            overflow: hidden;
+        }
+        .box-container .box img{
+            width: 100%;
+            height: auto;
+        }
+        .box-container .box a{
+            position: absolute;
+            right: 7px;
+            bottom: 5px;
+        }
+    </style>
+@endpush
     @push('scripts')
-
+<script src="/extra-assets/dropzonejs/min/dropzone.min.js"></script>
         <script>
             $(document).on('change','select#category',function(e) {
                 e.preventDefault();
@@ -203,6 +261,27 @@
                         });
                     }
                 })
+            })
+
+            Dropzone.autoDiscover= false;
+            var myDropzone = new Dropzone('.dropzone',{
+                autoProcessQueue:false,
+                parallelUploads: 1,
+                addRemoveLinks: true,
+                maxFilesize: 2,
+                acceptedFiles: 'images/*',
+                init: function () {
+                    thisDz = this;
+                    var uploadBtn = document.getElementById('uploadAdditionalImagesBtn');
+                    uploadBtn.addEventListener('click', function (){
+                        var nFiles = myDropzone.getQueuedFiles().length;
+                        thisDz.options.parallelUploads = nFiles;
+                        thisDz.processQueue();
+                    })
+                    thisDz.on('queuecomplete',function (){
+                        this.removeAllFiles()
+                    })
+                }
             })
         </script>
 
