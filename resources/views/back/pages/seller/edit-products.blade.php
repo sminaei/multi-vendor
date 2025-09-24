@@ -138,18 +138,18 @@
                                 <button class="btn btn-outline-primary btn-sm mt-2" id="uploadAdditionalImagesBtn">upload</button>
                             </div>
                         </div>
-                        <div class="box-container mb-2">
+                        <div class="box-container mb-2" id="product_images">
                             <div class="box">
                                 <img src="" alt="">
-                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash" </a>
+                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                             </div>
                             <div class="box">
                                 <img src="" alt="">
-                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash" </a>
+                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                             </div>
                             <div class="box">
                                 <img src="" alt="">
-                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash" </a>
+                                <a class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                             </div>
                         </div>
                     </div>
@@ -189,6 +189,9 @@
             position: absolute;
             right: 7px;
             bottom: 5px;
+        }
+        .swal2-popup{
+            font-size: .87em;
         }
     </style>
 @endpush
@@ -280,8 +283,46 @@
                     })
                     thisDz.on('queuecomplete',function (){
                         this.removeAllFiles()
-                    })
+                        getProductImages();
+                    });
                 }
+            })
+            getProductImages();
+            function getProductImages(){
+                var url = "{{ route('seller.product.get-product-image',['product_id' => request('id')]) }}";
+                $.get(url,{},function (response){
+                    $('div#product_images').html(response.data);
+                },'json')
+            }
+            $(document).on('click','#deleteProductImageBtn', function (e){
+                e.preventDefault();
+                var url = "{{ route('seller.product.delete-product-image') }}";
+                var token = "{{ csrf_token() }}";
+                var image_id = $(this).data("image");
+                swal.fire({
+                    title:'are you sure',
+                    html:'you want to delete this image',
+                    showCloseButton:true,
+                    showCancelButton:true,
+                    cancelButtonText:'Cancel',
+                    confirmButtonText:'yes,delete',
+                    cancelButtonColor: '#30885d6',
+                    width:300,
+                    allowOutsideClick:false,
+                }).then(function (result) {
+                    if(result.value){
+                        $.post(url, { _token: token, image_id: image_id}, function (response){
+                toastr.remove();
+                if(response.status == 1){
+                    getProductImages();
+                    toastr.success(response.msg)
+                }else{
+                    toastr.error(response.msg);
+                }
+                        },'json')
+                    }
+                });
+                alert('image id: ' + image_id);
             })
         </script>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\SubCategory;
 use App\Rules\ValidatePrice;
 use Illuminate\Http\Request;
@@ -91,8 +92,10 @@ class ProductController extends Controller
             }
         }
     }
-    public function allProducts(){
-          $data = [
+
+    public function allProducts()
+    {
+        $data = [
             'pageTitle' => 'My Products',
 
         ];
@@ -103,10 +106,10 @@ class ProductController extends Controller
     public function editProduct(Request $request)
     {
         $product = Product::findOrFail($request->id);
-        $categories = Category::orderBy('category_name','asc')->get();
-        $subcategories = SubCategory::where('category_id',$product->category)
-        ->where('is_child_of',0)
-        ->orderBy('subcategory_name','asc')->get();
+        $categories = Category::orderBy('category_name', 'asc')->get();
+        $subcategories = SubCategory::where('category_id', $product->category)
+            ->where('is_child_of', 0)
+            ->orderBy('subcategory_name', 'asc')->get();
         $data = [
             'pageTitle' => 'Edit Product',
             'categories' => $categories,
@@ -122,28 +125,28 @@ class ProductController extends Controller
         $product = Product::findOrFail($request->product_id);
         $product_image = $product->product_image;
         $request->validate([
-            'name' => 'required|unique:products,name,'.$product->id,
+            'name' => 'required|unique:products,name,' . $product->id,
             'summary' => 'required|min:100',
             'product_image' => 'nullable|mimes:png,jpg,jpeg|max:1024',
-            'subcategory' =>'required|exists:sub_categories,id',
+            'subcategory' => 'required|exists:sub_categories,id',
             'price' => ['required', new ValidatePrice()],
             'compare_price' => ['nullable', new ValidatePrice()],
-        ],[
+        ], [
             'name.required' => 'enter product name',
             'name.unique' => 'this name is already taken',
             'summary.required' => 'write product summary',
             'subcategory.required' => 'enter subcategory name',
             'price.required' => 'enter product price ',
         ]);
-        if ($request->hasFile('product_image')){
+        if ($request->hasFile('product_image')) {
             $path = 'images/products/';
             $file = $request->hasFile('product_image');
-            $filename = 'PIMG_'.time().uniqid().'.'.$file->getClientOriginalExtension();
+            $filename = 'PIMG_' . time() . uniqid() . '.' . $file->getClientOriginalExtension();
             $old_product_image = $product->product_image;
-            $upload = $file->move(public_path($path),$filename);
-            if ($upload){
-                if (File::exists(public_path($path.$old_product_image))){
-                    File::delete(public_path($path.$old_product_image));
+            $upload = $file->move(public_path($path), $filename);
+            if ($upload) {
+                if (File::exists(public_path($path . $old_product_image))) {
+                    File::delete(public_path($path . $old_product_image));
                 }
                 $product_image = $filename;
             }
@@ -158,17 +161,58 @@ class ProductController extends Controller
         $product->visibility = $request->visibility;
         $product->product_image = $request->product_image;
         $updated = $product->save();
-        if($updated){
-            return response()->json(['status'=> 1,'msg'=> 'product successfully updated']);
-        }else{
-            return response()->json(['status'=> 0,'msg'=> 'something went wrong']);
+        if ($updated) {
+            return response()->json(['status' => 1, 'msg' => 'product successfully updated']);
+        } else {
+            return response()->json(['status' => 0, 'msg' => 'something went wrong']);
 
         }
 
     }
-    public function uploadProductImages(Request $request){
+
+    public function uploadProductImages(Request $request)
+    {
         $product = Product::findOrFail($request->product_id);
         $path = "images/products/additionals/";
         $file = $request->file('file');
+        $filename = 'PIMG_' . time() . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path($path), $filename);
+        $pimage = new ProductImage();
+        $pimage->product_id = $product->id;
+        $pimage->image = $filename;
+        $pimage->save();
+
+    }
+
+    public function getProductImages(Request $request)
+    {
+        $product = Product::with('images')->findOrFail($request->product_id);
+        $path = "images/products/additionals/";
+        $html = "";
+        if ($product->images->count() > 0) {
+            foreach ($product->images as $item) {
+                $html .= '<div class="box">
+                    <img src="/' . $path . $item->image . '">
+                    <a href="javascript:;" data-image="'.$item->id.'" class="btn btn-danger btn-sm" id="deleteProductImageBtn"><i class="fa fa-trash"></i> </a>
+                    </div>';
+            }
+        } else {
+            $html = "<span class='text-danger'>no images</span>";
+        }
+        return response()->json(['status' =>1,'data'=>$html]);
+    }
+    public function deleteProductImage(Request $request){
+    $product_image = ProductImage::findOrFail($request->image_id);
+    $path = "images/products/additionals/";
+    if ($product_image->image != null && File::exists(public_path($path.$product_image->image))){
+        File::delete(public_path($path.$product_image->image));
+        }
+        $delete = $product_image->delete();
+    if ($delete){
+        return response()->json(['status' => 1,'msg' => 'Product image has been deleted']);
+    }else{
+        return response()->json(['status' => 0,'msg' => 'Something went wrong']);
+
+    }
     }
 }
